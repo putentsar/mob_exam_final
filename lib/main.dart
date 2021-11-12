@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -9,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: appTitle,
       home: MyHomePage(title: appTitle),
       debugShowCheckedModeBanner: false,
@@ -17,48 +19,87 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  MyHomePage({required this.title});
+  final String title;
+  @override
+  _MyHomePageState createState() => _MyHomePageState(title: title);
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  _MyHomePageState({required this.title}) {
+    // через 3 секунды выключится заставка
+    Timer(Duration(seconds: 3), () {
+      setState(() {
+        splash = false;
+      });
+    });
+  }
 
   final String title;
+  bool splash = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: GridView.count(
-          padding: const EdgeInsets.all(20),
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 24,
-          childAspectRatio: 1,
-          crossAxisCount: 1,
-          children: [
-            createNewsCard('Заголовок №1', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №2', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №3', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №4', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №5', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №6', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №7', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №8', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №9', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-            createNewsCard('Заголовок №10', '12 ноября 2021',
-                'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
-          ],
-        ),
-      ),
+      // сначала splash, проверка на таймер
+      body: (splash)
+          ? GestureDetector(
+              onTap: () {
+                setState(() {
+                  // выключение сплеша по тапу
+                  splash = false;
+                });
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          'https://netmaek.ru/wa-data/public/shop/products/55/91/19155/images/125165/125165.480x0.jpg',
+                        ),
+                        fit: BoxFit.cover,
+                      ))),
+            )
+          : Center(
+              child: GridView.count(
+                padding: const EdgeInsets.all(20),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 24,
+                childAspectRatio: 1,
+                crossAxisCount: 1,
+                children: [
+                  createNewsCard('Заголовок №1', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №2', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №3', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №4', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №5', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №6', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №7', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №8', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №9', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                  createNewsCard('Заголовок №10', '12 ноября 2021',
+                      'https://horrorzone.ru/uploads/_pages/11014/fotolia_16722530_subscription_l.jpg'),
+                ],
+              ),
+            ),
       drawer: createDrawer(context),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    throw UnimplementedError();
   }
 }
 
@@ -108,7 +149,7 @@ Drawer createDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: const Text('https://github.com/putentsar/mob_exem.git'),
+          title: const Text('https://github.com/putentsar/mob_exam_final.git'),
           onTap: () {
             // Update the state of the app
             // ...
